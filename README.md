@@ -1,0 +1,1 @@
+This sample application demonstrates a regression in behaviour in the DevExpress ComboBox.
