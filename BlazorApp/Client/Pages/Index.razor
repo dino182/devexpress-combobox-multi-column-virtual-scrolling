@@ -1,7 +1,76 @@
 ﻿@page "/"
 
-<h1>Hello, world!</h1>
+@inject HttpClient _httpClient
 
-Welcome to your new app.
+<DxFormLayout CaptionPosition="CaptionPosition.Vertical">
+    <DxFormLayoutItem Caption="One-Column">
+        <DxComboBox TData="@Customer"
+                    TValue="string"
+                    CustomData="@GetData"
+                    @bind-Value="@_customerId"
+                    ValueFieldName="@nameof(Customer.Id)"
+                    TextFieldName="@nameof(Customer.ContactName)"
+                    NullText="Select customer..."
+                    FilteringMode="@DataGridFilteringMode.Contains"
+                    ListRenderMode="@ListRenderMode.Virtual"
+                    DropDownWidthMode="@DropDownWidthMode.ContentWidth" />
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Multi-Column">
+        <DxComboBox TData="@Customer"
+                    TValue="string"
+                    CustomData="@GetData"
+                    @bind-Value="@_customerId"
+                    ValueFieldName="@nameof(Customer.Id)"
+                    EditFormat="{1} {2} {3}"
+                    NullText="Select customer..."
+                    FilteringMode="@DataGridFilteringMode.Contains"
+                    ListRenderMode="@ListRenderMode.Virtual"
+                    DropDownWidthMode="@DropDownWidthMode.ContentWidth">
+            <DxListEditorColumn FieldName="@nameof(Customer.Id)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.CompanyName)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.ContactName)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.ContactTitle)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.Address)" />
+        </DxComboBox>
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="One-Column">
+        <DxTagBox TData="@Customer"
+                  TValue="string"
+                  CustomData="@GetData"
+                  @bind-Values="@_customerIds"
+                  ValueFieldName="@nameof(Customer.Id)"
+                  TextFieldName="@nameof(Customer.ContactName)"
+                  NullText="Select customer..."
+                  FilteringMode="@DataGridFilteringMode.Contains"
+                  ListRenderMode="@ListRenderMode.Virtual"
+                  DropDownWidthMode="@DropDownWidthMode.ContentWidth" />
+    </DxFormLayoutItem>
+    <DxFormLayoutItem Caption="Multi-Column">
+        <DxTagBox TData="@Customer"
+                  TValue="string"
+                  CustomData="@GetData"
+                  @bind-Values="@_customerIds"
+                  ValueFieldName="@nameof(Customer.Id)"
+                  EditFormat="{1} {2} {3}"
+                  NullText="Select customer..."
+                  FilteringMode="@DataGridFilteringMode.Contains"
+                  ListRenderMode="@ListRenderMode.Virtual"
+                  DropDownWidthMode="@DropDownWidthMode.ContentWidth">
+            <DxListEditorColumn FieldName="@nameof(Customer.Id)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.CompanyName)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.ContactName)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.ContactTitle)" />
+            <DxListEditorColumn FieldName="@nameof(Customer.Address)" />
+        </DxTagBox>
+    </DxFormLayoutItem>
+</DxFormLayout>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code {
+    private string _customerId;
+    private IEnumerable<string> _customerIds;
+
+    private Task<LoadResult> GetData(DataSourceLoadOptionsBase loadOptions, CancellationToken cancellationToken)
+    {
+        return _httpClient.GetFromJsonAsync<LoadResult>(loadOptions.ConvertToGetRequestUri("api/data"), cancellationToken);
+    }
+}
